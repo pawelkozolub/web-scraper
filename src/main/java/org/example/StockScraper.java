@@ -19,7 +19,7 @@ public class StockScraper {
 
             int i = 0;
             for (Element item : items) {
-                if (item.select("th.d_col_shortName").isEmpty()) {
+                if (!skipElement(item)) {
                     i++;
                     String name = item.select("a").text();
                     String time = item.select(".q_ch_date").attr("datetime");
@@ -32,5 +32,11 @@ public class StockScraper {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static boolean skipElement(Element element) {
+        if (!element.select("th.d_col_shortName").isEmpty()) return true;
+        if (!element.select(".ad").isEmpty()) return true;
+        return false;
     }
 }
