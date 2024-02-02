@@ -10,18 +10,21 @@ import java.io.IOException;
 public class StockScraper {
 
     public static void main(String[] args) {
-        final String URL = "https://www.money.pl/gielda/indeksy_gpw/";
+        final String URL = "https://www.biznesradar.pl/gielda/akcje_gpw";
 
         try {
             Document doc = Jsoup.connect(URL).get();
 
-            Elements elements = doc.select("div .rt-tr-group");
+            Elements items = doc.select(".qTableFull tr");
+
             int i = 0;
-            for (Element el : elements) {
+            for (Element item : items) {
                 i++;
-                String indexName = el.select("div > a").text();
-                String indexClose = el.select("div:eq(1)").text();
-                System.out.printf("%d \t%s \t%s \n", i, indexName, indexClose);
+                String name = item.select("a").text();
+                String time = item.select(".q_ch_date").attr("datetime");
+                String close = item.select(".q_ch_act").text();
+                String closePct = item.select(".q_ch_per").text();
+                System.out.printf("%d %s %s %s %s\n", i, name, time, close, closePct);
             }
 
         } catch (IOException e) {
